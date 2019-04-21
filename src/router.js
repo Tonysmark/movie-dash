@@ -1,7 +1,12 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
-
+import About from "./views/About.vue";
+import Recommand from "./views/Recommand.vue";
+import Comments from "./views/Comments.vue";
+import Recent from "./views/Recent.vue";
+import Comming from "./views/Comming.vue";
+import bilibili from "./components/BilibiliReview.vue";
+import subComments from "./components/subComments.vue";
 Vue.use(Router);
 
 export default new Router({
@@ -10,17 +15,40 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home
+      name: "recent", // 近期上映
+      component: Recent
+    },
+    {
+      path: "/comming",
+      name: "comming", //即将上映
+      component: Comming
     },
     {
       path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+      name: "about", // 关于作者
+      component: About
+    },
+    {
+      path: "/recommand",
+      name: "recommand", // top推荐
+      component: Recommand
+    },
+    {
+      path: "/comments",
+      name: "comments", // 影评
+      component: Comments,
+      children: [
+        {
+          path: "/bilibili",
+          name: "bilibili",
+          component: bilibili
+        },
+        {
+          path: "/subComments",
+          name: "subComments",
+          component: subComments
+        }
+      ],redirect:'/bilibili'
     }
-  ]
+  ],redirect:'/'
 });
