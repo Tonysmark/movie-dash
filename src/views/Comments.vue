@@ -1,69 +1,49 @@
 <template>
   <div id="comments">
     <div class="search-box">
-      <input
-        class="search-text"
-        v-model="value"
-        v-on:keyup.enter="searchcat(value);searchdou(value)"
-        type="text"
-        placeholder="搜索喜爱电影...."
-      >
+      <input class="search-text" v-model="value" @keyup.enter="onSubmit" placeholder="搜索喜爱电影....">
       <div class="search-btn">
         <Icon type="md-search" size="20"/>
       </div>
     </div>
-    <imdbVideo :imdbLink="doubanData.imdb"></imdbVideo>
-    <!-- <Bilibili :bilisearch="value"></Bilibili> -->
+    <imdbVideo></imdbVideo>
     <div class="info-container">
       <div class="img-wrapper">
-        <img :src="maoyanproData.cover" alt>
+        <img :src="getMaoyanData.cover" alt>
       </div>
       <div class="infos">
         <div class="title">
-          {{
-          maoyanproData.title
-          }}
-          <span class="subtitle">{{doubanData.subtitle}}</span>
+          {{getMaoyanData.title}}
+          <span class="subtitle">{{getDoubanData.subtitle}}</span>
         </div>
         <div class="more-about">
-          <span>{{maoyanproData.duration}}</span>
-          <span>
-            {{
-            maoyanproData.category
-            }}
-          </span>
+          <span>{{getMaoyanData.duration}}</span>
+          <span>{{getMaoyanData.category}}</span>
           <span>
             <Icon type="md-calendar"/>
-            {{maoyanproData.release}}
+            {{getMaoyanData.release}}
           </span>
         </div>
-        <div class="report">{{doubanData.report}}</div>
+        <div class="report">{{getDoubanData.report}}</div>
       </div>
       <div class="ratings">
         <span class="rating-group">
           <img src="../assets/svgs/douban.svg" alt>
-          <span class="rate-num">{{doubanData.rating}}</span>
-          <span class="rate-people">
-            {{doubanData.rating_people}}
-            人参与评分
-          </span>
+          <span class="rate-num">{{getDoubanData.rating}}</span>
+          <span class="rate-people">{{getDoubanData.rating_people}}人参与评分</span>
         </span>
         <span class="rating-group">
           <img src="../assets/svgs/icon_24-猫眼电影.svg" alt>
-          <span class="rate-num">{{maoyanproData.rating_num}}</span>
-          <span class="rate-people">{{maoyanproData.detail_score_count}}</span>
+          <span class="rate-num">{{getMaoyanData.rating_num}}</span>
+          <span class="rate-people">{{getMaoyanData.detail_score_count}}</span>
         </span>
         <span class="rating-group">
           <img src="../assets/svgs/imdb.svg" alt>
-          <span class="rate-num">
-            {{
-            maoyanproData.imdb_num
-            }}
-          </span>
+          <span class="rate-num">{{getMaoyanData.imdb_num}}</span>
         </span>
         <span class="rating-group">
           <img src="../assets/svgs/star.svg" alt>
-          <span class="want-to">{{maoyanproData.detail_wish_count}}</span>
+          <span class="want-to">{{getMaoyanData.detail_wish_count}}</span>
         </span>
       </div>
       <Menu mode="horizontal">
@@ -78,10 +58,16 @@
         <router-view></router-view>
       </div>
     </div>
+    <div>
+      <p>猫眼数据: {{getMaoyanData}}</p>
+      <br>
+      <p>豆瓣数据 : {{getDoubanData}}</p>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import imdbVideo from "../components/imdbVideo";
 const request = require("axios");
 const cheerio = require("cheerio");
@@ -91,172 +77,21 @@ export default {
   },
   data() {
     return {
-      value: "",
-      rating_num: 7.0,
-      rating: 8.2,
-      cateye: 8.0,
-      maoyanproData: [],
-      doubanData: []
+      value: ""
     };
   },
   methods: {
-    searchcat: function(value) {
-      let entry = async function(key) {
-        let url = `https://piaofang.maoyan.com/search?key=${encodeURIComponent(
-          key
-        )}`;
-        const page = await request.get(url);
-        const $ = cheerio.load(page.data);
-        let movielist = [];
-        let patter = new RegExp(`(${key})+(?!\\d)`, "g");
-        let nodeLength = $("#search-list .indentInner").length;
-        console.log("node length: " + nodeLength);
-        $("#search-list .indentInner").each((i, e) => {
-          let dataUrl = $(e).attr("data-url");
-          let title = $(e)
-            .find(".title")
-            .text();
-          let gotmatch = title.match(patter);
-          console.log(gotmatch);
-          if (gotmatch) {
-            title = gotmatch[0];
-            movielist.push({ title, dataUrl });
-          } else if (nodeLength == 1) {
-            movielist.push({ title, dataUrl });
-          }
-        });
-        console.log(movielist);
-        return movielist[0];
-      };
-      let getData = async function(links) {
-        const page = await request.get(`https://piaofang.maoyan.com${links}`);
-        const $ = cheerio.load(page.data);
-        let coverlink = $(".info-poster img").attr("src");
-        let cover = `https:${coverlink.match(/.*\.jpg/)}`;
-        let title = $(".info-title .info-title-content").text();
-        let category = $(".info-category")
-          .text()
-          .trim();
-        let duration = $(".info-source-duration span").text();
-        let release = $(".info-release .score-info").text();
-        let rating_num = $(".rating-stars .rating-num").text();
-        let detail_score_count = $(".score-detail .detail-score-count").text();
-        let detail_wish_count = $(".score-detail .detail-wish-count").text();
-        let imdb_num = $(".NAmerican-show .item p")
-          .eq(1)
-          .text();
-        return {
-          title,
-          cover,
-          duration,
-          category,
-          release,
-          rating_num,
-          detail_score_count,
-          detail_wish_count,
-          imdb_num
-        };
-      };
-      let fetchData = async function(value) {
-        const links = await entry(value);
-        const data = await getData(links.dataUrl);
-        return data;
-      };
-      fetchData(value)
-        .then(e => {
-          console.log("猫眼电影专业版数据来源");
-          console.log(e);
-          this.maoyanproData = e;
-        })
-        .catch(e => console.log(e));
-    },
-    searchdou: function(value) {
-      let getMovieUrl = async function(key) {
-        // 入口应该是用户查寻信息
-        let url = `https://movie.douban.com/j/subject_suggest?q=${encodeURIComponent(
-          key
-        )}`;
-        const ajaxData = await request.get(url);
-        let data = ajaxData.data;
-        let patter = new RegExp(`(${key})+(?!\\d)`, "g");
-        let movielist = [];
-        data.forEach(e => {
-          let gotmatch = e.title.match(patter);
-          if (gotmatch) {
-            movielist.push(e);
-          }
-        });
-        let movieUrl = movielist[0].url;
-        let movieCover = movielist[0].img;
-        let subtitle = movielist[0].sub_title;
-        return {
-          movieUrl,
-          movieCover,
-          subtitle
-        };
-      };
-      // // 拿到 AJAX 数据并且找到需要的页面
-      let getInfo = async function(url, cover, subtitle) {
-        const page = await request.get(url);
-        const $ = cheerio.load(page.data);
-        let comments = [];
-        $("#hot-comments .comment-item").each((i, e) => {
-          let short = $(e)
-            .find(".comment .short")
-            .text();
-          let full = $(e)
-            .find(".comment .full")
-            .text();
-          if (full) {
-            comments[i] = { id: i, full };
-          } else {
-            comments[i] = { id: i, short };
-          }
-        });
-        let title = $("#content h1").text();
-        let rating = $("#interest_sectl .rating_self strong").text();
-        let rating_people = $(
-          "#interest_sectl .rating_self .rating_people span"
-        ).text();
-        let better_than = $("#interest_sectl .rating_betterthan a").text();
-        let reportA = $("#link-report .all").text();
-        let reportB = $("#link-report span").text();
-        let report;
-        reportA == "" ? (report = reportB) : (report = reportA);
-        let imdb = $("#info a")
-          .eq(-1)
-          .attr("href");
-        const doubaninfo = {
-          title,
-          rating,
-          rating_people: parseFloat(rating_people),
-          better_than,
-          report,
-          imdb, //imdb的链接
-          cover,
-          subtitle,
-          comments
-        };
-        console.log(doubaninfo.imdb);
-        return doubaninfo;
-      };
-      let fetchData = async function(key) {
-        const links = await getMovieUrl(key);
-        const data = await getInfo(
-          links.movieUrl,
-          links.movieCover,
-          links.subtitle
-        );
-        return data;
-      };
-      fetchData(value)
-        .then(e => {
-          console.log("豆瓣数据来源 ↓");
-          console.log(e);
-          this.doubanData = e;
-        })
-        .catch(e => console.log(e));
+    ...mapActions(["onSearchDouban", "onSearchMaoyan"]),
+    onSubmit() {
+      // 调用 action中search方法
+      this.onSearchDouban(this.value);
+      this.onSearchMaoyan(this.value);
+      // 最后清空value
+      this.value = "";
     }
+  },
+  computed: {
+    ...mapGetters(["getDoubanData", "getMaoyanData"]) //召唤豆瓣数据
   }
 };
 </script>
@@ -317,6 +152,7 @@ export default {
     margin: 0 auto;
     width: 95%;
     .img-wrapper {
+      z-index: 999;
       width: 300px;
       position: relative;
       img {

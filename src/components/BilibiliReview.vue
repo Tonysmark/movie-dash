@@ -2,7 +2,7 @@
   <div id="BilibiliReview">
     <div class="video-container">
       <iframe
-        src="https://player.bilibili.com/player.html?aid=48288447"
+        :src="getBilibiliData[index]"
         scrolling="no"
         border="0"
         frameborder="no"
@@ -11,10 +11,10 @@
       ></iframe>
     </div>
     <div class="btn-group">
-      <div class="prev btn">
+      <div class="prev btn" @click="decrease">
         <Icon type="ios-arrow-dropleft" size="25"/>上一个
       </div>
-      <div class="next btn">
+      <div class="next btn" @click="increase">
         下一个
         <Icon type="ios-arrow-dropright" size="25"/>
       </div>
@@ -23,55 +23,75 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import cheerio from "cheerio";
 import request from "axios";
 export default {
-  props: {},
   data() {
-    return {};
+    return {
+      index: 0
+    };
   },
-  watch: {
-    bilisearch: function(bilisearch) {
-      async function biliSpider(key) {
-        const url =
-          "https://search.bilibili.com/all?keyword=" +
-          encodeURIComponent(key + "影评") +
-          "&from_source=banner_search";
-        const page = await request.get(url);
-        const $ = await cheerio.load(page.data);
-        let content = $(".video-contain li .title");
-        let map = [];
-        for (let i = 0; i < content.length; i++) {
-          let href = content[i].attribs["href"];
-          let reg = /\/av(\d*)/; // 正则匹配那去av号码
-          let [, avNum] = href.match(reg); // 结构赋值,只给数组中第二个参数
-          let iframeUrl = `https://player.bilibili.com/player.html?aid=${avNum}`;
-          map.push(iframeUrl);
-        }
-        return map;
+  computed: {
+    ...mapGetters(["getBilibiliData"]) // 召唤B站
+  },
+  methods: {
+    decrease() {
+      if (this.index > 0) {
+        this.index--;
+        console.log(this.index);
       }
-      let fetchData = async function(bilisearch) {
-        let res = biliSpider(bilisearch);
-        return res;
-      };
-      fetchData(bilisearch)
-        .then(e => {
-          this.urls = e;
-        })
-        .catch(e => console.log(e));
+    },
+    increase() {
+      if (this.index <= 20) {
+        this.index++;
+        console.log(this.index);
+      }
     }
   }
+  // watch: {
+  //   bilisearch: function(bilisearch) {
+  //     async function biliSpider(key) {
+  //       const url =
+  //         "https://search.bilibili.com/all?keyword=" +
+  //         encodeURIComponent(key + "影评") +
+  //         "&from_source=banner_search";
+  //       const page = await request.get(url);
+  //       const $ = await cheerio.load(page.data);
+  //       let content = $(".video-contain li .title");
+  //       let map = [];
+  //       for (let i = 0; i < content.length; i++) {
+  //         let href = content[i].attribs["href"];
+  //         let reg = /\/av(\d*)/; // 正则匹配那去av号码
+  //         let [, avNum] = href.match(reg); // 结构赋值,只给数组中第二个参数
+  //         let iframeUrl = `https://player.bilibili.com/player.html?aid=${avNum}`;
+  //         map.push(iframeUrl);
+  //       }
+  //       return map;
+  //     }
+  //     let fetchData = async function(bilisearch) {
+  //       let res = biliSpider(bilisearch);
+  //       return res;
+  //     };
+  //     fetchData(bilisearch)
+  //       .then(e => {
+  //         this.urls = e;
+  //       })
+  //       .catch(e => console.log(e));
+  //   }
+  // }
 };
 </script>
 
 <style lang="less" scoped>
 @import url("../assets/style/colors.less");
 #BilibiliReview {
-  margin: 3rem auto;
+  margin: 3rem auto 0 auto;
+  padding-bottom: 5rem;
   .video-container {
     box-shadow: @depth1;
     width: 100%;
-    height: 600px;
+    height: 800px;
     border-radius: 5px;
     overflow: hidden;
     iframe {
@@ -85,6 +105,7 @@ export default {
       display: inline;
     }
     .btn {
+      user-select: none;
       font-size: 16px;
       vertical-align: middle;
       background-color: @bilibili-pink;
@@ -94,6 +115,10 @@ export default {
       border-radius: 5px;
       box-shadow: @depth1;
       cursor: pointer;
+    }
+    .gray {
+      background-color: #eee;
+      color: #000;
     }
   }
 }

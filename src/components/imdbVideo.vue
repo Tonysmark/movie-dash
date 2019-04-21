@@ -1,9 +1,7 @@
 <template>
   <div class="video">
-    <!-- 豆瓣数据传过来,然后这里拿到imdb数据之后就可以直接绑定在数据上了 -->
     <div class="video-container" v-if="videosrc">
-      <video id="tralier-video"  :src="videosrc" controls>
-      </video>
+      <video id="tralier-video" :src="videosrc" controls></video>
     </div>
     <div class="wait-video" v-else>
       <Spin size="large" fix></Spin>
@@ -11,20 +9,27 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 const requests = require("axios");
 const cheerio = require("cheerio");
 export default {
-  props: {
-    imdbLink: String
-  },
   data() {
     return {
-      videosrc: ""
+      videosrc: "",
+      imdbData: ""
     };
   },
+  computed: {
+    ...mapGetters(["getDoubanData"]) //召唤豆瓣
+  },
+  created() {
+    this.imdbData = this.getDoubanData.imdb;
+    console.log(this.imdbData);
+  },
   watch: {
-    imdbLink: function(imdbLink) {
+    imdbData: function(imdbData) {
       async function imdb(url) {
+        console.log("imdbData: " + imdbData);
         let data = await mainpage(url);
         let videoURL = await page2link(data);
         return videoURL;
@@ -42,7 +47,6 @@ export default {
         const page = await requests.get(url2);
         const dataBody = page.data;
         const current = await dataBody.videoMetadata[data.videoid];
-        console.log("=========================");
         let video = [];
         let p1080 = current.encodings.filter(e => e.definition == "1080p");
         let p720 = current.encodings.filter(e => e.definition == "720p");
@@ -57,7 +61,7 @@ export default {
         console.log("imdb预告视频：" + video[0]);
         return video[0];
       }
-      imdb(imdbLink)
+      imdb(imdbData)
         .then(e => {
           console.log(e);
           this.videosrc = e;
@@ -85,7 +89,7 @@ export default {
   box-shadow: @depth1;
   border-radius: 5px;
   height: 420px;
-  width:100%;
+  width: 100%;
   display: inline-block;
   position: relative;
   overflow: hidden;
