@@ -58,34 +58,28 @@
         <router-view></router-view>
       </div>
     </div>
-    <div>
-      <p>猫眼数据: {{getMaoyanData}}</p>
-      <br>
-      <p>豆瓣数据 : {{getDoubanData}}</p>
-    </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import imdbVideo from "../components/imdbVideo";
-const request = require("axios");
-const cheerio = require("cheerio");
 export default {
-  components: {
-    imdbVideo
-  },
   data() {
     return {
       value: ""
     };
   },
+  components: {
+    imdbVideo
+  },
   methods: {
-    ...mapActions(["onSearchDouban", "onSearchMaoyan"]),
+    ...mapActions(["onSearchDouban", "onSearchMaoyan", "onSearchBiliBili"]),
     onSubmit() {
       // 调用 action中search方法
       this.onSearchDouban(this.value);
       this.onSearchMaoyan(this.value);
+      this.onSearchBiliBili(this.value);
       // 最后清空value
       this.value = "";
     }
