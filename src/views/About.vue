@@ -7,7 +7,8 @@
     </header>
     <h1>基于Electron-Vue的电影聚合平台</h1>
     <h2>
-      <Icon type="logo-github"/>访问我的GitHub地址<a>https://github.com/tonysmark</a>
+      <Icon type="logo-github"/>访问我的GitHub地址
+      <a>https://github.com/tonysmark</a>
     </h2>
   </div>
 </template>
@@ -18,7 +19,8 @@ export default {
 </script>
 <style lang="less" scoped>
 #about {
-  margin-top: 100px;
+  height: 100vh;
+  // margin-top: 100px;
   text-align: center;
   header {
     display: flex;
@@ -32,7 +34,7 @@ export default {
       width: 100px;
     }
   }
-  h2{
+  h2 {
     padding: 20px 0;
   }
 }

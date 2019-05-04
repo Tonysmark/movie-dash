@@ -1,26 +1,19 @@
 # movie-dash
 
+电影聚合中心软件app.
+
+## TODO
+
+- [ ] 推荐电影后端部分
+- [ ] 登录验证成功后路由跳转
+- [x] 推荐部分设计稿
+- [ ] 查找电影搜索前loading cover
+- [ ] 路由切换效果
+
 ## BUG
 
-Some data from VUEX can show up 
-
-![1555857858793](README.assets/1555857858793.png)
-
-Some just don’t
-
-![1555857913346](README.assets/1555857913346.png)
-
-But if I use `{{somedata}}` to reveal this data:
-
-![1555857987612](README.assets/1555857987612.png)
-
-Surely I’ll get some thing....
-
-getters got data 
-
-![1555858056977](README.assets/1555858056977.png)
-
-*Where I was missing ?*
+- [x]  fixed unknown problem
+- [ ]  已经上映电影, 网格排版问题
 
 ## Project setup
 
@@ -48,5 +41,3 @@ npm run test
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

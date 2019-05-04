@@ -12,6 +12,9 @@
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
+  "repository": {
+    "url": "https://github.com/Tonysmark/movie-dash.git"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.3",
@@ -32,6 +35,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
+    "swiper": "^4.5.0",
     "vue-cli-plugin-electron-builder": "^1.2.0",
     "vue-template-compiler": "^2.5.21"
   }
