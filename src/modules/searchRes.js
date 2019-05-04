@@ -16,9 +16,7 @@ const actions = {
   async onSearchDouban({ commit }, value) {
     let enteryDouBan = async function(key) {
       // 入口应该是用户查寻信息
-      let url = `https://movie.douban.com/j/subject_suggest?q=${encodeURIComponent(
-        key
-      )}`;
+      let url = `https://movie.douban.com/j/subject_suggest?q=${encodeURIComponent(key)}`;
       const ajaxData = await axios.get(url);
       let data = ajaxData.data;
       let patter = new RegExp(`(${key})+(?!\\d)`, "g");
@@ -57,9 +55,7 @@ const actions = {
       });
       let title = $("#content h1").text();
       let rating = $("#interest_sectl .rating_self strong").text();
-      let rating_people = $(
-        "#interest_sectl .rating_self .rating_people span"
-      ).text();
+      let rating_people = $("#interest_sectl .rating_self .rating_people span").text();
       let better_than = $("#interest_sectl .rating_betterthan a").text();
       let reportA = $("#link-report .all").text();
       let reportB = $("#link-report span").text();
@@ -83,20 +79,14 @@ const actions = {
     };
     let result = async function(key) {
       const links = await enteryDouBan(key);
-      const data = await getInfo(
-        links.movieUrl,
-        links.movieCover,
-        links.subtitle
-      );
+      const data = await getInfo(links.movieUrl, links.movieCover, links.subtitle);
       return await data;
     };
     await commit("addDoubanData", await result(value));
   },
   async onSearchMaoyan({ commit }, value) {
     let entryMaoYan = async function(key) {
-      let url = `https://piaofang.maoyan.com/search?key=${encodeURIComponent(
-        key
-      )}`;
+      let url = `https://piaofang.maoyan.com/search?key=${encodeURIComponent(key)}`;
       const page = await axios.get(url);
       const $ = cheerio.load(page.data);
       let movielist = [];
@@ -157,23 +147,30 @@ const actions = {
     await commit("addMaoyanData", await result(value));
   },
   async onSearchBiliBili({ commit }, value) {
-    const biliSpider = async function(key) {
-      const url =
-        "https://search.bilibili.com/all?keyword=" +
-        encodeURIComponent(key + "影评") +
-        "&from_source=banner_search";
-      const page = await axios.get(url);
-      const $ = await cheerio.load(page.data);
-      let content = $(".video-contain li .title");
-      let map = [];
-      for (let i = 0; i < content.length; i++) {
-        let href = content[i].attribs["href"];
-        let reg = /\/av(\d*)/; // 正则匹配那去av号码
-        let [, avNum] = href.match(reg); // 结构赋值,只给数组中第二个参数
-        let iframeUrl = `https://player.bilibili.com/player.html?aid=${avNum}`;
-        map.push(iframeUrl);
-      }
-      return await map;
+    const biliSpider = async function(search) {
+      const key = encodeURIComponent(search);
+      const page = await axios({
+        method: "get",
+        url: `https://api.bilibili.com/x/web-interface/search/all?jsonp=jsonp&highlight=1&keyword=${key}&single_column=-1`,
+        headers: {
+          DNT: 1,
+          Referer: `https://search.bilibili.com/all?keyword=${key}`,
+          "sec-ch-ua": "Google Chrome 74",
+          "Sec-Fetch-Dest": "script",
+          "Sec-Fetch-Mode": "no-cors",
+          "Sec-Fetch-Site": "same-site",
+          "Sec-Fetch-User": "?F",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
+        }
+      });
+      const obj = await page.data;
+      let video = obj.data.result.video;
+      let iframeURL = [];
+      video.forEach(e => {
+        iframeURL.push(`https://player.bilibili.com/player.html?aid=${e.aid}`);
+      });
+      console.log(iframeURL);
+      return await iframeURL;
     };
     await commit("addBilibili", await biliSpider(value));
   },
