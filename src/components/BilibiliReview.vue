@@ -24,8 +24,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import cheerio from "cheerio";
-import request from "axios";
 export default {
   data() {
     return {

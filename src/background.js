@@ -1,20 +1,13 @@
 "use strict";
 
 import { app, protocol, BrowserWindow, ipcMain } from "electron";
-import {
-  createProtocol,
-  installVueDevtools
-} from "vue-cli-plugin-electron-builder/lib";
+import { createProtocol, installVueDevtools } from "vue-cli-plugin-electron-builder/lib";
 const isDevelopment = process.env.NODE_ENV !== "production";
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let win;
-// Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(["app"], { secure: true });
 function createWindow() {
   win = new BrowserWindow({
-    width: 1600,
+    width: 1500,
     height: 900,
     minHeight: 600,
     minWidth: 1000,
@@ -26,15 +19,12 @@ function createWindow() {
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
     createProtocol("app");
-    // Load the index.html when not in development
     win.loadURL("app://./index.html");
   }
-
   win.on("closed", () => {
     win = null;
   });

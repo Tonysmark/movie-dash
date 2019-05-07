@@ -148,29 +148,13 @@ const actions = {
   },
   async onSearchBiliBili({ commit }, value) {
     const biliSpider = async function(search) {
-      const key = encodeURIComponent(search);
-      const page = await axios({
-        method: "get",
-        url: `https://api.bilibili.com/x/web-interface/search/all?jsonp=jsonp&highlight=1&keyword=${key}&single_column=-1`,
-        headers: {
-          DNT: 1,
-          Referer: `https://search.bilibili.com/all?keyword=${key}`,
-          "sec-ch-ua": "Google Chrome 74",
-          "Sec-Fetch-Dest": "script",
-          "Sec-Fetch-Mode": "no-cors",
-          "Sec-Fetch-Site": "same-site",
-          "Sec-Fetch-User": "?F",
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36"
-        }
+      const data = await axios({
+        method: "post",
+        data: { search },
+        url: "http://localhost:5000/api/scrapy/bilibili"
       });
-      const obj = await page.data;
-      let video = obj.data.result.video;
-      let iframeURL = [];
-      video.forEach(e => {
-        iframeURL.push(`https://player.bilibili.com/player.html?aid=${e.aid}`);
-      });
-      console.log(iframeURL);
-      return await iframeURL;
+      console.log(data);
+      return await data.data;
     };
     await commit("addBilibili", await biliSpider(value));
   },

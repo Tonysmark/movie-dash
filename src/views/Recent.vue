@@ -2,14 +2,7 @@
   <div id="recent">
     <h1>正在热映</h1>
     <Row>
-      <Col
-        :md="24"
-        :lg="12"
-        :xl="8"
-        class-name="card"
-        v-for="item in nowPlayingData"
-        :key="item.id"
-      >
+      <Col span="12" class-name="card" v-for="item in nowPlayingData" :key="item.id">
         <div class="cover-wrapper">
           <img :src="item.CoverUrl" alt>
         </div>
@@ -68,7 +61,9 @@ export default {
           let score_star = $(e).attr("data-score");
           let star = $(e).attr("data-star");
           let release = $(e).attr("data-release");
-          let duration = $(e).attr("data-duration").match(/\d+/)[0];
+          let duration = $(e)
+            .attr("data-duration")
+            .match(/\d+/)[0];
           let region = $(e).attr("data-region");
           let director = $(e).attr("data-director");
           let actors = $(e).attr("data-actors");
@@ -78,7 +73,7 @@ export default {
           return data.push({
             title,
             score,
-            score_star:parseInt(score_star)/2,
+            score_star: parseInt(score_star) / 2,
             star,
             release,
             duration,
@@ -102,9 +97,10 @@ export default {
     margin-bottom: 2rem;
   }
   .card {
-    width: 444px;
+    width: 474px;
+    height: 254px;
     background-color: #fff;
-    margin-right: 80px;
+    margin-right: 60px;
     margin-bottom: 3rem;
     box-shadow: @depth2;
     border-radius: 10px;

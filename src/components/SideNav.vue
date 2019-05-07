@@ -1,5 +1,5 @@
 <template>
-<!-- TODO: 怎么让侧栏可以收起来 -->
+  <!-- TODO: 怎么让侧栏可以收起来 -->
   <div id="side-nav">
     <Menu active-name="1">
       <User></User>
@@ -20,6 +20,7 @@
           <Icon size="20" type="md-alert"/>关于我
         </MenuItem>
       </MenuGroup>
+      <a class="btn logout">退出登录</a>
     </Menu>
   </div>
 </template>
@@ -70,6 +71,20 @@ export default {
     }
     .ivu-menu-item-group-title {
       font-size: 16px;
+    }
+  }
+  .logout {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 20px;
+    border-radius: 5px;
+    border: 1px solid #2d8cf0;
+    transition: 0.2s;
+    &:hover {
+      background-color: #2d8cf0;
+      color: #fff;
     }
   }
 }
