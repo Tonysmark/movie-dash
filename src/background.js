@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol, installVueDevtools } from "vue-cli-plugin-electron-builder/lib";
 const isDevelopment = process.env.NODE_ENV !== "production";
 let win;
+
 protocol.registerStandardSchemes(["app"], { secure: true });
 function createWindow() {
   win = new BrowserWindow({

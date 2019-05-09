@@ -10,7 +10,7 @@ import subComments from "./components/subComments.vue";
 Vue.use(Router);
 
 export default new Router({
-  mode: "history",
+  // mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
@@ -48,7 +48,9 @@ export default new Router({
           name: "subComments",
           component: subComments
         }
-      ],redirect:'/bilibili'
+      ],
+      redirect: "/bilibili"
     }
-  ],redirect:'/'
+  ],
+  redirect: "/"
 });

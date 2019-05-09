@@ -1,23 +1,27 @@
 <template>
+  <!-- TODO: 背景视频 -->
   <div>
-    <nav>
-      <div class="app-title">电影推荐系统</div>
-      <div class="control">
-        <span @click="min">
-          <Icon size="16" type="md-remove"/>
-        </span>
-        <span @click="max">
-          <Icon  size="14" type="md-square-outline" />
-        </span>
-        <span @click="close">
-          <Icon size="16" type="md-close"/>
-        </span>
-      </div>
-    </nav>
+    <div class="win-bar">
+      <nav class="nav">
+        <div class="app-title">电影推荐系统</div>
+        <div class="control">
+          <span @click="min">
+            <Icon size="16" type="md-remove"/>
+          </span>
+          <span @click="max">
+            <Icon size="14" type="md-square-outline"/>
+          </span>
+          <span @click="close">
+            <Icon size="16" type="md-close"/>
+          </span>
+        </div>
+      </nav>
+    </div>
   </div>
 </template>
 <script>
-import {ipcRenderer} from "electron";
+import { ipcRenderer } from "electron";
+
 export default {
   methods: {
     min: () => {
@@ -33,10 +37,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-@import url('../assets/style/colors.less');
+@import url("../assets/style/colors.less");
 nav {
   position: fixed;
-  top:0;
+  top: 0;
   background-color: @bg-color;
   -webkit-app-region: drag;
   display: flex;
