@@ -1,16 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
-import About from "./views/About.vue";
-import Recommand from "./views/Recommand.vue";
-import Comments from "./views/Comments.vue";
 import Recent from "./views/Recent.vue";
-import Comming from "./views/Comming.vue";
 import bilibili from "./components/BilibiliReview.vue";
 import subComments from "./components/subComments.vue";
 Vue.use(Router);
-
-export default new Router({
-  // mode: "history",
+const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
@@ -21,22 +15,27 @@ export default new Router({
     {
       path: "/comming",
       name: "comming", //即将上映
-      component: Comming
+      component: () => import("./views/Comming.vue")
     },
     {
       path: "/about",
       name: "about", // 关于作者
-      component: About
+      component: () => import("./views/About.vue")
     },
     {
       path: "/recommand",
       name: "recommand", // top推荐
-      component: Recommand
+      component: () => import("./views/Recommand.vue")
+    },
+    {
+      path: "/login",
+      name: "login", // 登录
+      component: () => import("./views/Login.vue")
     },
     {
       path: "/comments",
       name: "comments", // 影评
-      component: Comments,
+      component: () => import("./views/Comments.vue"),
       children: [
         {
           path: "/bilibili",
@@ -54,3 +53,12 @@ export default new Router({
   ],
   redirect: "/"
 });
+router.beforeEach((to, from, next) => {
+  const isLogin = localStorage.login ? true : false;
+  if (to.path == "/login") {
+    next(); // 登陆注册页面正常跳转
+  } else {
+    isLogin ? next() : next("/login");
+  }
+});
+export default router;

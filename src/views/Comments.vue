@@ -6,57 +6,65 @@
         <Icon type="md-search" size="20"/>
       </div>
     </div>
-    <imdbVideo></imdbVideo>
-    <div class="info-container">
-      <div class="img-wrapper">
-        <img :src="getMaoyanData.cover" alt>
-      </div>
-      <div class="infos">
-        <div class="title">
-          {{getMaoyanData.title}}
-          <span class="subtitle">{{getDoubanData.subtitle}}</span>
+    <div v-if="getDoubanData">
+      <imdbVideo></imdbVideo>
+      <div class="info-container">
+        <div class="img-wrapper">
+          <img :src="getMaoyanData.cover" alt>
         </div>
-        <div class="more-about">
-          <span>{{getMaoyanData.duration}}</span>
-          <span>{{getMaoyanData.category}}</span>
-          <span>
-            <Icon type="md-calendar"/>
-            {{getMaoyanData.release}}
+        <div class="infos">
+          <div class="title">
+            {{getMaoyanData.title}}
+            <span class="subtitle">{{getDoubanData.subtitle}}</span>
+          </div>
+          <div class="more-about">
+            <span>{{getMaoyanData.duration}}</span>
+            <span>{{getMaoyanData.category}}</span>
+            <span>
+              <Icon type="md-calendar"/>
+              {{getMaoyanData.release}}
+            </span>
+          </div>
+          <div class="report">{{getDoubanData.report}}</div>
+        </div>
+        <div class="ratings">
+          <span class="rating-group">
+            <img src="../assets/svgs/douban.svg" alt>
+            <span class="rate-num">{{getDoubanData.rating}}</span>
+            <span class="rate-people">{{getDoubanData.rating_people}}人参与评分</span>
+          </span>
+          <span class="rating-group">
+            <img src="../assets/svgs/icon_24-猫眼电影.svg" alt>
+            <span class="rate-num">{{getMaoyanData.rating_num}}</span>
+            <span class="rate-people">{{getMaoyanData.detail_score_count}}</span>
+          </span>
+          <span class="rating-group">
+            <img src="../assets/svgs/imdb.svg" alt>
+            <span class="rate-num">{{getMaoyanData.imdb_num}}</span>
+          </span>
+          <span class="rating-group">
+            <img src="../assets/svgs/star.svg" alt>
+            <span class="want-to">{{getMaoyanData.detail_wish_count}}</span>
           </span>
         </div>
-        <div class="report">{{getDoubanData.report}}</div>
+        <Menu mode="horizontal">
+          <MenuItem name="1" to="/bilibili">
+            <Icon type="ios-paper"/>Bilibili 影评
+          </MenuItem>
+          <MenuItem name="2" to="/subComments">
+            <Icon type="ios-people"/>最新评论
+          </MenuItem>
+        </Menu>
+        <div class="subpage-container">
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
+        </div>
       </div>
-      <div class="ratings">
-        <span class="rating-group">
-          <img src="../assets/svgs/douban.svg" alt>
-          <span class="rate-num">{{getDoubanData.rating}}</span>
-          <span class="rate-people">{{getDoubanData.rating_people}}人参与评分</span>
-        </span>
-        <span class="rating-group">
-          <img src="../assets/svgs/icon_24-猫眼电影.svg" alt>
-          <span class="rate-num">{{getMaoyanData.rating_num}}</span>
-          <span class="rate-people">{{getMaoyanData.detail_score_count}}</span>
-        </span>
-        <span class="rating-group">
-          <img src="../assets/svgs/imdb.svg" alt>
-          <span class="rate-num">{{getMaoyanData.imdb_num}}</span>
-        </span>
-        <span class="rating-group">
-          <img src="../assets/svgs/star.svg" alt>
-          <span class="want-to">{{getMaoyanData.detail_wish_count}}</span>
-        </span>
-      </div>
-      <Menu mode="horizontal">
-        <MenuItem name="1" to="/bilibili">
-          <Icon type="ios-paper"/>Bilibili 影评
-        </MenuItem>
-        <MenuItem name="2" to="/subComments">
-          <Icon type="ios-people"/>最新评论
-        </MenuItem>
-      </Menu>
-      <div class="subpage-container">
-        <router-view></router-view>
-      </div>
+    </div>
+    <div v-else class="pre-spin-container">
+      <Spin fix size="large"></Spin>
+      <h1 class="pre-title">搜索电影吧！</h1>
     </div>
   </div>
 </template>
@@ -94,6 +102,15 @@ export default {
 @import url("../assets/style/colors.less");
 #comments {
   padding-top: 1rem;
+  .pre-spin-container {
+    height: 100vh;
+    .pre-title {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-38%, -50%);
+    }
+  }
   .search-box {
     box-shadow: @depth1;
     z-index: 9999;
@@ -146,7 +163,7 @@ export default {
     margin: 0 auto;
     width: 95%;
     .img-wrapper {
-      z-index: 999;
+      z-index: 99;
       width: 300px;
       position: relative;
       img {
@@ -160,7 +177,7 @@ export default {
     .infos {
       margin-left: 310px;
       padding-left: 46px;
-      min-height: 330px;
+      min-height: 380px;
       .title {
         padding: 55px 0 40px 0;
         font-size: 34px;

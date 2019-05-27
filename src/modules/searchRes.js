@@ -69,7 +69,7 @@ const actions = {
         rating,
         rating_people: parseFloat(rating_people),
         better_than,
-        report,
+        report: report.trim(),
         imdb, //imdb的链接
         cover,
         subtitle,

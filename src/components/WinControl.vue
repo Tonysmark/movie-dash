@@ -1,5 +1,4 @@
 <template>
-  <!-- TODO: 背景视频 -->
   <div>
     <div class="win-bar">
       <nav class="nav">

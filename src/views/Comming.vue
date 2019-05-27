@@ -19,16 +19,7 @@
                 <Icon type="md-heart" color="#dd182b" size="20"/>
                 {{item.want_to}}
               </div>
-              <div class="buttons">
-                <span class="play">
-                  <a href>
-                    <Icon type="md-play"/> 预告
-                  </a>
-                </span>
-                <span class="get-ticket">
-                  <a href>购买电影票</a>
-                </span>
-              </div>
+              <TralierBtn style="float:right" :movieId="item.id"></TralierBtn>
             </div>
           </div>
         </div>
@@ -37,6 +28,7 @@
   </div>
 </template>
 <script>
+import TralierBtn from "../components/TraliersBtn";
 import requests from "superagent";
 import cheerio from "cheerio";
 export default {
@@ -46,7 +38,10 @@ export default {
     };
   },
   methods: {},
-  created() {
+  components: {
+    TralierBtn
+  },
+  activated() {
     requests
       .get("https://movie.douban.com/cinema/later/qingdao/")
       .then(res => {
@@ -74,18 +69,17 @@ export default {
           let want_to = $(e)
             .find(".intro ul .last span")
             .text();
-          let trailer = $(e)
-            .find(".intro ul a")
+          let id = $(e)
+            .find(".thumb")
             .attr("href");
-          let trailerPage = trailer == undefined ? "暂时没有预告片呦" : trailer;
           data.push({
+            id: id.match(/\d+/)[0],
             imgsrc,
             title,
             releaseDate,
             type,
             country,
-            want_to,
-            trailerPage
+            want_to
           });
         });
         this.comingData = data;
@@ -142,7 +136,7 @@ export default {
             width: 100%;
             padding: 10px;
             .title {
-              padding: 2px 40px 10px 40px;
+              padding: 2px 40px 0 40px;
               font-size: 20px;
               color: @font-dark;
               border-bottom: 1px solid #eee;
@@ -160,23 +154,6 @@ export default {
                 display: inline;
                 .ivu-icon-md-heart {
                   margin-right: 5px;
-                }
-              }
-              .buttons {
-                // margin-left: 70px;
-                float: right;
-                display: inline;
-                .play {
-                  border-radius: 5px;
-                  padding: 7px;
-                  background-color: @card-button;
-                  margin-right: 15px;
-                }
-                .get-ticket {
-                  a {
-                    padding: 6px 30px;
-                    background: @card-button;
-                  }
                 }
               }
             }

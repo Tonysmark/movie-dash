@@ -9,7 +9,7 @@
         <div class="movie-info">
           <div class="titles">
             <span class="title">{{item.title}}</span>
-            <span class="duration">{{item.duration}}分钟</span>
+            <span class="duration">{{item.duration==''?"未公布":item.duration}}</span>
           </div>
           <div class="rate">
             <span v-if="item.score_star==0">暂无评分</span>
@@ -23,55 +23,67 @@
             <div class="actor">演员：{{item.actors}}</div>
             <div>上映时间：{{item.release}} | {{item.region}}</div>
           </div>
-          <div class="button-group">
-            <span class="play">
-              <a href>
-                <Icon type="md-play"/>预告
-              </a>
-            </span>
-            <span class="get-ticket">
-              <a href>购买电影票</a>
-            </span>
-          </div>
+          <TraliersBtn :movieId="item.id" :movieTickets="item.tickets"></TraliersBtn>
         </div>
       </Col>
     </Row>
+    <div v-if="showTralier">
+      <Modal v-model="showTralier" draggable scrollable title="预告视频" width="auto">
+        <div>
+          <video src="../assets/footage/402400326.mp4" controls></video>
+        </div>
+      </Modal>
+    </div>
+    <Modal v-model="showTickets" fullscreen title="购买电影票">
+      <div>
+        <h1>这里跳转到淘票票</h1>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
+import TraliersBtn from "../components/TraliersBtn";
 import request from "superagent";
 import cheerio from "cheerio";
 export default {
   name: "recent",
-  components: {},
+  components: {
+    TraliersBtn
+  },
   data() {
     return {
-      nowPlayingData: []
+      nowPlayingData: [],
+      showTralier: false,
+      showTickets: false
     };
   },
-  created() {
+  activated() {
     request
       .get("https://movie.douban.com/cinema/nowplaying/qingdao")
       .then(res => {
         const $ = cheerio.load(res.text);
         let data = [];
         $("#nowplaying .lists .list-item").each((i, e) => {
+          let id = $(e).attr("data-subject");
           let title = $(e).attr("data-title");
           let score = $(e).attr("data-score");
           let score_star = $(e).attr("data-score");
           let star = $(e).attr("data-star");
           let release = $(e).attr("data-release");
-          let duration = $(e)
-            .attr("data-duration")
-            .match(/\d+/)[0];
+          let duration = $(e).attr("data-duration");
           let region = $(e).attr("data-region");
           let director = $(e).attr("data-director");
           let actors = $(e).attr("data-actors");
           let CoverUrl = $(e)
             .find(".poster img")
             .attr("src");
+          let tickets = $(e)
+            .find(".sbtn .ticket-btn")
+            .attr("href");
           return data.push({
+            id,
             title,
+            tickets,
             score,
             score_star: parseInt(score_star) / 2,
             star,
@@ -144,22 +156,6 @@ export default {
       .film-maker {
         font-size: 15px;
         margin-bottom: 2rem;
-      }
-      .button-group {
-        text-align: center;
-        margin-bottom: 1rem;
-        .play {
-          border-radius: 5px;
-          padding: 7px;
-          background-color: @card-button;
-          margin-right: 15px;
-        }
-        .get-ticket {
-          a {
-            padding: 6px 30px;
-            background: @card-button;
-          }
-        }
       }
     }
   }

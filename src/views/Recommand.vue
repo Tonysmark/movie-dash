@@ -1,35 +1,43 @@
 <template>
   <div id="recommand">
     <h1>Top 推荐</h1>
-    <Menu mode="horizontal" active-name="1">
+    <Menu mode="horizontal" active-name="1" @on-select="onSelect">
+      <MenuItem name="0">
+        <Icon type="md-happy"/>喜剧
+      </MenuItem>
       <MenuItem name="1">
-        <Icon type="ios-paper"/>TOP10
+        <Icon type="ios-people"/>动作
       </MenuItem>
       <MenuItem name="2">
-        <Icon type="ios-people"/>动作类
+        <Icon type="md-color-wand"/>科幻
+      </MenuItem>
+      <MenuItem name="3">
+        <Icon type="md-ionitron"/>悬疑
       </MenuItem>
       <MenuItem name="4">
-        <Icon type="ios-construct"/>科幻类
+        <Icon type="md-easel"/>犯罪
       </MenuItem>
-      <MenuItem name="4">
-        <Icon type="ios-construct"/>战争类
+      <MenuItem name="5">
+        <Icon type="md-brush"/>动画
+      </MenuItem>
+      <MenuItem name="6">
+        <Icon type="md-bowtie"/>剧情
+      </MenuItem>
+      <MenuItem name="7">
+        <Icon type="md-boat"/>爱情
       </MenuItem>
     </Menu>
     <div class="swiper-container">
       <div class="swiper-wrapper">
         <div class="swiper-slide" v-for="(item,index) in movieList" :key="index">
           <div class="card">
-            <div class="card-image" :class="{isActive:item._id.$oid==clicked?true:false}">
+            <div class="card-image" :class="{isActive:item.id==clicked?true:false}">
               <img :src="item.imgh_url" alt>
             </div>
             <div class="card-content">
-              <div class="floating-btn" @click="onMore(item._id.$oid)">
+              <div class="floating-btn" @click="onMore(item.id)">
                 <div class="btn">
-                  <Icon
-                    type="md-add"
-                    class="add"
-                    :class="{rotate:item._id.$oid==clicked?true:false}"
-                  />
+                  <Icon type="md-add" class="add" :class="{rotate:item.id==clicked?true:false}"/>
                 </div>
               </div>
               <div class="card-title">{{item.title}}</div>
@@ -43,18 +51,18 @@
                     </td>
                   </tr>
                   <tr>
+                    <td class="table-title">导演</td>
+                    <td class="table-content">
+                      <span v-for="dir in item.director" :key="dir.name">{{dir.name}}</span>
+                    </td>
+                  </tr>
+                  <tr>
                     <td class="table-title">演员</td>
                     <td class="table-content">
                       <span
                         v-for="actor_name in item.actor"
                         :key="actor_name.name"
                       >{{actor_name.name}}</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="table-title">导演</td>
-                    <td class="table-content">
-                      <span v-for="dir in item.director" :key="dir.name">{{dir.name}}</span>
                     </td>
                   </tr>
                 </table>
@@ -72,6 +80,7 @@
 </template>
 <script>
 import Swiper from "swiper";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -219,6 +228,26 @@ export default {
       } else {
         this.clicked = arg;
       }
+    },
+    async onSelect(arg) {
+      let tagList = [
+        "喜剧",
+        "动作",
+        "科幻",
+        "悬疑",
+        "犯罪",
+        "动画",
+        "剧情",
+        "爱情"
+      ];
+      let tagName = tagList[arg];
+      console.log(tagName);
+      const response = await axios({
+        method: "post",
+        url: "http://localhost:5000/api/users/recommand",
+        data: { tagName }
+      }).catch(e => console.log(e));
+      this.movieList = response.data;
     }
   }
 };
@@ -305,6 +334,7 @@ export default {
     }
     .table-title {
       padding-right: 20px;
+      min-width: 52px;
     }
     .floating-btn .btn:hover {
       transform: scale(1.1);

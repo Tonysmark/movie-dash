@@ -1,20 +1,17 @@
 <template>
   <div class="content">
     <div class="user-head">
-      <img src="../assets/img/52i27wxkyo2xoryw9kp2rx834.jpg" alt>
+      <img :src="userInfo.avatar" alt>
     </div>
     <div class="user-name">
       <Dropdown trigger="click">
-        <a href="javascript:void(0)">
-          Tony Smark
+        <a class="name">
+          {{userInfo.name}}
           <Icon type="ios-arrow-down"></Icon>
         </a>
         <DropdownMenu slot="list">
           <DropdownItem>
-            <router-link to="/login">登录</router-link>
-          </DropdownItem>
-          <DropdownItem>
-            <router-link to="/register">注册</router-link>
+            <a @click="onLogOut">退出登录</a>
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
@@ -23,7 +20,37 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+import axios from "axios";
+export default {
+  data() {
+    return {
+      userInfo: ""
+    };
+  },
+  computed: {
+    ...mapGetters(["getToken"])
+  },
+  watch: {
+    getToken: async function(getToken) {
+      const response = await axios({
+        method: "get",
+        url: "http://localhost:5000/api/users/current",
+        headers: {
+          Authorization: getToken
+        }
+      });
+      console.log(this.userInfo);
+      this.userInfo = response.data;
+    }
+  },
+  methods: {
+    onLogOut() {
+      localStorage.clear();
+      this.$router.replace("/login");
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -39,6 +66,15 @@ export default {};
   }
   .user-name {
     margin-top: 1rem;
+    .name {
+      margin-left: 15px;
+      font-size: 16px;
+      color: #444;
+      // letter-spacing: 2px;
+    }
+    .ivu-dropdown-item a {
+      color: #dd182b;
+    }
   }
 }
 </style>

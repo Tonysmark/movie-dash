@@ -1,0 +1,16 @@
+#login-modal .ivu-modal-body {
+  height: 400px;
+  width: 300px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#login-modal .ivu-modal-body .form-btn {
+  margin-right: 20px;
+}
+#login-modal .ivu-modal-body .login-btn {
+  width: 100%;
+}
+#login-modal .ivu-modal-footer {
+  display: none;
+}

@@ -18,10 +18,14 @@ export default {
   components: {
     WinControl,
     SideNav
+  },
+  created() {
+    localStorage.setItem("login", false);
   }
 };
 </script>
 <style lang="less">
+@import url("./assets/style/login.less");
 @import url("./assets/style/colors.less");
 #app {
   .main-view {
@@ -42,7 +46,6 @@ export default {
         width: 90%;
       }
     }
-
     // Extra large devices (large desktops, 1200px and up)
     @media (min-width: 1600px) {
       .container {
@@ -54,15 +57,19 @@ export default {
   #comming {
     .ivu-timeline-item-tail {
       border-left: 1px solid #707070;
-      height: 180%;;
+      height: 180%;
     }
     .ivu-timeline-item-head {
       background-color: @bg-color;
       top: 35%;
     }
-    .ivu-timeline-item-content{
+    .ivu-timeline-item-content {
       padding: 1px 1px 10px 34px;
     }
   }
+}
+#getTickets {
+  width: 100%;
+  height: 700px;
 }
 </style>
