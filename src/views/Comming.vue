@@ -37,7 +37,6 @@ export default {
       comingData: []
     };
   },
-  methods: {},
   components: {
     TralierBtn
   },

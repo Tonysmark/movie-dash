@@ -88,7 +88,7 @@ export default {
             score_star: parseInt(score_star) / 2,
             star,
             release,
-            duration,
+            duration:duration.match(/\d+/)[0]+' 分钟',
             region,
             director,
             actors,

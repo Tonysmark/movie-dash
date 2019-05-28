@@ -212,8 +212,8 @@ export default {
       coverflowEffect: {
         rotate: 0,
         stretch: 0,
-        depth: 200,
-        modifier: 1,
+        depth: 100,
+        modifier: 3,
         slideShadows: true
       },
       pagination: {

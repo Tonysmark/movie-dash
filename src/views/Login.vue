@@ -62,8 +62,8 @@ export default {
       loginModal: true,
       formInline: {
         user: "",
-        email: "mjyuyu@qq.com",
-        password: "forever168",
+        email: "",
+        password: "",
         phone: ""
       },
       ruleInline: {
