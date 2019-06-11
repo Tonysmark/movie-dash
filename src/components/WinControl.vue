@@ -30,6 +30,7 @@ export default {
       ipcRenderer.send("max");
     },
     close: () => {
+      localStorage.clear();
       ipcRenderer.send("close");
     }
   }
