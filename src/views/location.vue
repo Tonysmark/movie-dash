@@ -3,7 +3,12 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data: () => {},
+  computed: () => {},
+  created: () => {},
+  methods: {}
+};
 </script>
 
 
