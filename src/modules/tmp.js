@@ -34,3 +34,4 @@ async function imdb(imdbLink) {
   let videoURL = await page2link(data);
   return videoURL;
 }
+imdb();
