@@ -3,7 +3,6 @@ import Router from 'vue-router';
 import About from './views/About.vue';
 import Recommand from './views/Recommand.vue';
 import Comments from './views/Comments.vue';
-import Recent from './views/Recent.vue';
 import Comming from './views/Comming.vue';
 import bilibili from './components/BilibiliReview.vue';
 import subComments from './components/subComments.vue';
